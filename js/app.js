@@ -7,22 +7,28 @@ import {
   importData,
 } from './state.js';
 
-let sidebarCollapsed = window.innerWidth <= 600;
+let sidebarCollapsed = false;
+
+function isMobile() { return window.innerWidth <= 600; }
 
 function renderSidebar() {
   const sidebar = document.getElementById('sidebar');
   sidebar.innerHTML = '';
-  sidebar.classList.toggle('collapsed', sidebarCollapsed);
 
-  // Toggle button (always visible)
-  const toggleBtn = document.createElement('button');
-  toggleBtn.className = 'sidebar-toggle';
-  toggleBtn.title = sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar';
-  toggleBtn.textContent = sidebarCollapsed ? '»' : '«';
-  toggleBtn.addEventListener('click', () => { sidebarCollapsed = !sidebarCollapsed; render(); });
-  sidebar.appendChild(toggleBtn);
+  // On mobile, collapsed state is irrelevant — sidebar is a bottom drawer
+  const collapsed = !isMobile() && sidebarCollapsed;
+  sidebar.classList.toggle('collapsed', collapsed);
 
-  if (sidebarCollapsed) return;
+  // Toggle button — desktop only
+  if (!isMobile()) {
+    const toggleBtn = document.createElement('button');
+    toggleBtn.className = 'sidebar-toggle';
+    toggleBtn.title = collapsed ? 'Expand sidebar' : 'Collapse sidebar';
+    toggleBtn.textContent = collapsed ? '»' : '«';
+    toggleBtn.addEventListener('click', () => { sidebarCollapsed = !sidebarCollapsed; render(); });
+    sidebar.appendChild(toggleBtn);
+    if (collapsed) return;
+  }
 
   // App title
   const title = document.createElement('div');
@@ -305,11 +311,20 @@ export function render() {
 
 function renderMobileBar() {
   let bar = document.getElementById('mobile-bar');
+
+  if (!isMobile()) {
+    // Desktop: hide mobile bar
+    if (bar) bar.style.display = 'none';
+    return;
+  }
+
+  // Mobile: show mobile bar
   if (!bar) {
     bar = document.createElement('div');
     bar.id = 'mobile-bar';
     document.getElementById('app').prepend(bar);
   }
+  bar.style.display = 'flex';
   bar.innerHTML = '';
 
   const title = document.createElement('span');
