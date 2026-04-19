@@ -104,6 +104,16 @@ export function exitFocus() {
 - Clicking exit button calls `exitFocus()`
 - Pressing `Esc` key calls `exitFocus()`
 
+### Background Toggle Button
+
+- Position: fixed top-left corner of the overlay (`position: fixed; top: 24px; left: 24px`)
+- Toggles background image on/off
+- Default: background image visible
+- When off: falls back to plain dark background (`var(--bg)`)
+- State stored in `state.focusBg: true` (persisted), so preference survives page reload
+- Desktop: `🌄 Hide bg` / `🌄 Show bg` — icon + text
+- Mobile: icon only (`🌄`), larger tap target (`44px × 44px`)
+
 ## Entry Points
 
 **Desktop sidebar** — bottom of sidebar, above Export/Import buttons:
@@ -122,7 +132,7 @@ Both call `enterFocus()` on click.
 
 | File | Change |
 |---|---|
-| `js/state.js` | Add `focusMode: false` to state, add `enterFocus()`, `exitFocus()` |
+| `js/state.js` | Add `focusMode: false`, `focusBg: true` to state, add `enterFocus()`, `exitFocus()`, `toggleFocusBg()` |
 | `js/app.js` | Add `renderFocus()`, call from `render()`; add ⊙ button to sidebar and mobile bar; add `keydown` listener for Esc |
 | `style.css` | Styles for `#focus-overlay`, `.focus-card`, `.focus-exit-btn`, mobile exit button |
 | `js/storage.js` | No changes — `focusMode` persists automatically with meta |
