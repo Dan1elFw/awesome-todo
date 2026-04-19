@@ -11,6 +11,12 @@ export function saveToStorage(state) {
       if (!byCategory[todo.category]) byCategory[todo.category] = [];
       byCategory[todo.category].push(todo);
     }
+    // Remove orphaned keys for deleted categories
+    for (const key of Object.keys(localStorage)) {
+      if (key.startsWith(`${PREFIX}:todos:`) && !byCategory[key.slice(`${PREFIX}:todos:`.length)]) {
+        localStorage.removeItem(key);
+      }
+    }
     for (const [cat, todos] of Object.entries(byCategory)) {
       localStorage.setItem(`${PREFIX}:todos:${cat}`, JSON.stringify(todos));
     }

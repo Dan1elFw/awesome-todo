@@ -29,7 +29,7 @@ function persist() {
 }
 
 export function addTodo(text, category, dueDate) {
-  const id = Math.random().toString(36).slice(2, 10);
+  const id = crypto.randomUUID();
   state.todos.push({ id, text, category, completed: false, dueDate });
   persist();
 }
@@ -74,9 +74,11 @@ export function deleteCategory(name) {
 export function setActiveCategory(name) {
   state.activeCategory = name;
   persist();
+  if (typeof state._onchange === 'function') state._onchange();
 }
 
 export function setActiveFilter(filter) {
   state.activeFilter = filter;
   persist();
+  if (typeof state._onchange === 'function') state._onchange();
 }

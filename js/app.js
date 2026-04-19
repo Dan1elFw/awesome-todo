@@ -221,7 +221,10 @@ function renderMain() {
         if (newText) editTodo(todo.id, newText);
         render();
       };
-      input.addEventListener('keydown', (e) => { if (e.key === 'Enter') save(); });
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') save();
+        if (e.key === 'Escape') { input.value = todo.text; render(); }
+      });
       input.addEventListener('blur', save);
     });
     actions.appendChild(editBtn);
@@ -250,5 +253,8 @@ initState();
 if (!state.storageAvailable) {
   console.warn('awesome-todo: localStorage unavailable, running in-memory only');
 }
+
+// Hook up state change listener
+state._onchange = render;
 
 render();
