@@ -30,7 +30,7 @@ function persist() {
 
 export function addTodo(text, category, dueDate) {
   const id = crypto.randomUUID();
-  state.todos.push({ id, text, category, completed: false, dueDate });
+  state.todos.push({ id, text, category, completed: false, dueDate, todayDate: '' });
   persist();
 }
 
