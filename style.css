@@ -179,11 +179,34 @@ body {
 .todo-item.completed .todo-text { text-decoration: line-through; }
 
 .todo-item input[type="checkbox"] {
-  accent-color: var(--accent);
-  width: 16px;
-  height: 16px;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--accent-dim);
+  border-radius: 3px;
   cursor: pointer;
   flex-shrink: 0;
+  position: relative;
+  background: transparent;
+}
+
+.todo-item input[type="checkbox"]:hover {
+  border-color: var(--accent);
+}
+
+.todo-item input[type="checkbox"]:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.todo-item input[type="checkbox"]:checked::after {
+  content: '✓';
+  position: absolute;
+  top: -2px;
+  left: 2px;
+  color: var(--bg);
+  font-size: 14px;
+  font-weight: bold;
 }
 
 .todo-text { flex: 1; font-size: 14px; word-break: break-word; }
