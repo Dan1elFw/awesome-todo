@@ -4,6 +4,7 @@ import {
   addTodo, toggleTodo, editTodo, deleteTodo,
   addCategory, deleteCategory,
   setActiveCategory, setActiveFilter,
+  importData,
 } from './state.js';
 
 function renderSidebar() {
@@ -86,6 +87,37 @@ function renderSidebar() {
   exportBtn.style.marginTop = 'auto';
   exportBtn.addEventListener('click', exportAll);
   sidebar.appendChild(exportBtn);
+
+  // Import button
+  const importBtn = document.createElement('button');
+  importBtn.className = 'sidebar-action';
+  importBtn.textContent = '↑ Import';
+  importBtn.addEventListener('click', () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.addEventListener('change', () => {
+      const file = input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const data = JSON.parse(e.target.result);
+          if (!Array.isArray(data.todos) || !Array.isArray(data.categories)) {
+            alert('Invalid backup file.');
+            return;
+          }
+          importData(data);
+          render();
+        } catch {
+          alert('Failed to parse file — make sure it\'s a valid JSON backup.');
+        }
+      };
+      reader.readAsText(file);
+    });
+    input.click();
+  });
+  sidebar.appendChild(importBtn);
 }
 
 function exportAll() {

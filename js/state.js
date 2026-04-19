@@ -71,6 +71,19 @@ export function deleteCategory(name) {
   persist();
 }
 
+export function importData(data) {
+  // Merge categories (ignore duplicates)
+  for (const cat of (data.categories || [])) {
+    if (cat && !state.categories.includes(cat)) state.categories.push(cat);
+  }
+  // Merge todos (skip existing IDs)
+  const existingIds = new Set(state.todos.map(t => t.id));
+  for (const todo of (data.todos || [])) {
+    if (todo.id && !existingIds.has(todo.id)) state.todos.push(todo);
+  }
+  persist();
+}
+
 export function setActiveCategory(name) {
   state.activeCategory = name;
   persist();
