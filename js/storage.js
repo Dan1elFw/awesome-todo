@@ -23,6 +23,8 @@ export function saveToStorage(state) {
     localStorage.setItem(`${PREFIX}:meta`, JSON.stringify({
       activeCategory: state.activeCategory,
       activeFilter: state.activeFilter,
+      focusMode: state.focusMode || false,
+      focusBg: state.focusBg !== false,
     }));
     return true;
   } catch {
@@ -46,6 +48,8 @@ export function loadFromStorage() {
       todos,
       activeCategory: meta.activeCategory || 'All',
       activeFilter: meta.activeFilter || 'all',
+      focusMode: meta.focusMode || false,
+      focusBg: meta.focusBg !== false,
     };
   } catch {
     return null;

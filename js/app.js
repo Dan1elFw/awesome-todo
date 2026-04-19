@@ -5,6 +5,7 @@ import {
   addCategory, deleteCategory,
   setActiveCategory, setActiveFilter,
   importData,
+  addToToday, removeFromToday, reconcileToday,
 } from './state.js';
 
 let sidebarCollapsed = false;
@@ -346,6 +347,7 @@ function renderMobileBar() {
 }
 
 initState();
+reconcileToday();
 
 if (!state.storageAvailable) {
   console.warn('awesome-todo: localStorage unavailable, running in-memory only');
