@@ -117,14 +117,31 @@ body {
   gap: 16px;
 }
 
+/* Add section */
+.add-section {
+  margin-bottom: 8px;
+}
+
+.add-label {
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
 .add-bar {
   display: flex;
   gap: 8px;
+  padding: 16px;
+  background: var(--bg);
+  border: 2px dashed var(--accent-dim);
+  border-radius: 6px;
+  margin-bottom: 8px;
 }
 
 .add-bar input, .add-bar select {
   background: var(--bg2);
-  border: 1px solid var(--border);
+  border: 1px solid var(--accent-dim);
   color: var(--text);
   font-family: inherit;
   font-size: 14px;
@@ -133,9 +150,17 @@ body {
   outline: none;
 }
 
-.add-bar input:focus, .add-bar select:focus { border-color: var(--accent-dim); }
+.add-bar input:focus, .add-bar select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(167, 139, 250, 0.2);
+}
 .add-bar input[type="text"] { flex: 1; }
 .add-bar input[type="date"] { width: 160px; color-scheme: dark; }
+
+.add-bar input[type="text"]::placeholder {
+  color: var(--accent);
+  opacity: 0.6;
+}
 
 /* Todo list */
 .todo-list { display: flex; flex-direction: column; gap: 8px; }

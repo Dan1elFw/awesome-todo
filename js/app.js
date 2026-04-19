@@ -148,6 +148,14 @@ function renderMain() {
   }
 
   // Add bar
+  const addSection = document.createElement('div');
+  addSection.className = 'add-section';
+
+  const addLabel = document.createElement('div');
+  addLabel.className = 'add-label';
+  addLabel.textContent = '// new task';
+  addSection.appendChild(addLabel);
+
   const addBar = document.createElement('div');
   addBar.className = 'add-bar';
 
@@ -170,7 +178,8 @@ function renderMain() {
   addBar.appendChild(textInput);
   addBar.appendChild(catSelect);
   addBar.appendChild(dateInput);
-  main.appendChild(addBar);
+  addSection.appendChild(addBar);
+  main.appendChild(addSection);
 
   textInput.addEventListener('keydown', (e) => {
     if (e.key !== 'Enter') return;
