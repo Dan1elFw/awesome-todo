@@ -7,9 +7,22 @@ import {
   importData,
 } from './state.js';
 
+let sidebarCollapsed = window.innerWidth <= 600;
+
 function renderSidebar() {
   const sidebar = document.getElementById('sidebar');
   sidebar.innerHTML = '';
+  sidebar.classList.toggle('collapsed', sidebarCollapsed);
+
+  // Toggle button (always visible)
+  const toggleBtn = document.createElement('button');
+  toggleBtn.className = 'sidebar-toggle';
+  toggleBtn.title = sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar';
+  toggleBtn.textContent = sidebarCollapsed ? '»' : '«';
+  toggleBtn.addEventListener('click', () => { sidebarCollapsed = !sidebarCollapsed; render(); });
+  sidebar.appendChild(toggleBtn);
+
+  if (sidebarCollapsed) return;
 
   // App title
   const title = document.createElement('div');

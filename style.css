@@ -35,7 +35,31 @@ body {
   padding: 24px 16px;
   gap: 8px;
   overflow-y: auto;
+  transition: width 0.2s ease, min-width 0.2s ease, padding 0.2s ease;
 }
+
+#sidebar.collapsed {
+  width: 44px;
+  min-width: 44px;
+  padding: 16px 8px;
+  overflow: hidden;
+}
+
+.sidebar-toggle {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-family: inherit;
+  font-size: 13px;
+  padding: 4px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  align-self: flex-end;
+  flex-shrink: 0;
+  margin-bottom: 4px;
+}
+
+.sidebar-toggle:hover { color: var(--accent); border-color: var(--accent-dim); }
 
 .sidebar-label {
   font-size: 10px;
