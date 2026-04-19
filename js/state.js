@@ -84,6 +84,39 @@ export function importData(data) {
   persist();
 }
 
+export function addToToday(id) {
+  const todo = state.todos.find(t => t.id === id);
+  if (todo) {
+    todo.todayDate = new Date().toISOString().slice(0, 10);
+    persist();
+  }
+}
+
+export function removeFromToday(id) {
+  const todo = state.todos.find(t => t.id === id);
+  if (todo) {
+    todo.todayDate = '';
+    persist();
+  }
+}
+
+export function reconcileToday() {
+  const today = new Date().toISOString().slice(0, 10);
+  let changed = false;
+  for (const todo of state.todos) {
+    if (!todo.todayDate) continue;
+    if (todo.todayDate < today) {
+      if (todo.completed) {
+        todo.todayDate = '';
+      } else {
+        todo.todayDate = today;
+      }
+      changed = true;
+    }
+  }
+  if (changed) persist();
+}
+
 export function setActiveCategory(name) {
   state.activeCategory = name;
   persist();
