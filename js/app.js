@@ -287,6 +287,34 @@ function renderMain() {
 export function render() {
   renderSidebar();
   renderMain();
+  renderMobileBar();
+}
+
+function renderMobileBar() {
+  let bar = document.getElementById('mobile-bar');
+  if (!bar) {
+    bar = document.createElement('div');
+    bar.id = 'mobile-bar';
+    document.getElementById('app').prepend(bar);
+  }
+  bar.innerHTML = '';
+
+  const title = document.createElement('span');
+  title.className = 'app-title';
+  title.textContent = '// AWESOME-TODO';
+  bar.appendChild(title);
+
+  const menuBtn = document.createElement('button');
+  menuBtn.id = 'mobile-menu-btn';
+  const sidebar = document.getElementById('sidebar');
+  const isOpen = sidebar.classList.contains('open');
+  menuBtn.textContent = isOpen ? '✕ close' : '☰ menu';
+  if (isOpen) menuBtn.classList.add('active');
+  menuBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+    render();
+  });
+  bar.appendChild(menuBtn);
 }
 
 initState();
