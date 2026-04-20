@@ -244,21 +244,33 @@ function renderMain() {
   const dateInput = document.createElement('input');
   dateInput.type = 'date';
 
-  addBar.appendChild(textInput);
-  addBar.appendChild(catSelect);
-  addBar.appendChild(dateInput);
-  addSection.appendChild(addBar);
-  main.appendChild(addSection);
+  const addBtn = document.createElement('button');
+  addBtn.className = 'add-task-btn';
+  addBtn.textContent = '+ Add';
+  addBtn.title = 'Add task';
 
-  textInput.addEventListener('keydown', (e) => {
-    if (e.key !== 'Enter') return;
+  const submitTask = () => {
     const text = textInput.value.trim();
     if (!text) return;
     addTodo(text, catSelect.value, dateInput.value);
     textInput.value = '';
     dateInput.value = '';
     render();
+  };
+
+  addBar.appendChild(textInput);
+  addBar.appendChild(catSelect);
+  addBar.appendChild(dateInput);
+  addBar.appendChild(addBtn);
+  addSection.appendChild(addBar);
+  main.appendChild(addSection);
+
+  textInput.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter') return;
+    submitTask();
   });
+
+  addBtn.addEventListener('click', submitTask);
 
   // Filter todos
   let visible = state.todos;

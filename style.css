@@ -186,6 +186,24 @@ body {
   opacity: 0.6;
 }
 
+.add-task-btn {
+  background: var(--accent-dim);
+  border: 1px solid var(--accent);
+  color: var(--bg);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 10px 18px;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.add-task-btn:hover {
+  background: var(--accent);
+}
+
 /* Todo list */
 .todo-list { display: flex; flex-direction: column; gap: 8px; }
 
@@ -409,6 +427,11 @@ body {
 
   .add-bar input[type="date"] {
     width: 100%;
+  }
+
+  .add-task-btn {
+    width: 100%;
+    padding: 12px;
   }
 
   /* Todo items: wrap on small screens */
