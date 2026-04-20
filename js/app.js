@@ -37,6 +37,35 @@ function renderSidebar() {
   title.textContent = '// AWESOME-TODO';
   sidebar.appendChild(title);
 
+  // Today entry
+  const todayCount = state.todos.filter(t => t.todayDate).length;
+  const todayItem = document.createElement('div');
+  todayItem.className = 'category-item today-item' + (state.activeCategory === 'today' ? ' active' : '');
+
+  const todayIcon = document.createElement('span');
+  todayIcon.textContent = '☀';
+  todayIcon.style.marginRight = '8px';
+  todayItem.appendChild(todayIcon);
+
+  const todayLabel = document.createElement('span');
+  todayLabel.textContent = 'Today';
+  todayItem.appendChild(todayLabel);
+
+  if (todayCount > 0) {
+    const todayBadge = document.createElement('span');
+    todayBadge.className = 'today-count';
+    todayBadge.textContent = todayCount;
+    todayItem.appendChild(todayBadge);
+  }
+
+  todayItem.addEventListener('click', () => { setActiveCategory('today'); render(); });
+  sidebar.appendChild(todayItem);
+
+  // Divider
+  const divider = document.createElement('div');
+  divider.className = 'sidebar-divider';
+  sidebar.appendChild(divider);
+
   // Categories label
   const catLabel = document.createElement('div');
   catLabel.className = 'sidebar-label';
@@ -332,6 +361,13 @@ function renderMobileBar() {
   title.className = 'app-title';
   title.textContent = '// AWESOME-TODO';
   bar.appendChild(title);
+
+  const todayCount = state.todos.filter(t => t.todayDate).length;
+  const todayMobileBtn = document.createElement('button');
+  todayMobileBtn.className = 'mobile-today-btn' + (state.activeCategory === 'today' ? ' active' : '');
+  todayMobileBtn.textContent = todayCount > 0 ? `☀ ${todayCount}` : '☀';
+  todayMobileBtn.addEventListener('click', () => { setActiveCategory('today'); render(); });
+  bar.appendChild(todayMobileBtn);
 
   const menuBtn = document.createElement('button');
   menuBtn.id = 'mobile-menu-btn';
