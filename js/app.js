@@ -6,6 +6,7 @@ import {
   setActiveCategory, setActiveFilter,
   importData,
   addToToday, removeFromToday, reconcileToday,
+  enterFocus, exitFocus, toggleFocusBg,
 } from './state.js';
 
 let sidebarCollapsed = false;
@@ -128,6 +129,12 @@ function renderSidebar() {
     btn.addEventListener('click', () => { setActiveFilter(value); render(); });
     sidebar.appendChild(btn);
   }
+
+  const focusBtn = document.createElement('button');
+  focusBtn.className = 'sidebar-action';
+  focusBtn.textContent = '⊙ Focus';
+  focusBtn.addEventListener('click', () => { enterFocus(); render(); });
+  sidebar.appendChild(focusBtn);
 
   // Export button
   const exportBtn = document.createElement('button');
@@ -348,6 +355,8 @@ function renderMain() {
 }
 
 export function render() {
+  renderFocus();
+  if (state.focusMode) return;
   renderSidebar();
   renderMain();
   renderMobileBar();
@@ -383,6 +392,13 @@ function renderMobileBar() {
   todayMobileBtn.addEventListener('click', () => { setActiveCategory('today'); render(); });
   bar.appendChild(todayMobileBtn);
 
+  const focusMobileBtn = document.createElement('button');
+  focusMobileBtn.className = 'mobile-today-btn';
+  focusMobileBtn.textContent = '⊙';
+  focusMobileBtn.title = 'Focus mode';
+  focusMobileBtn.addEventListener('click', () => { enterFocus(); render(); });
+  bar.appendChild(focusMobileBtn);
+
   const menuBtn = document.createElement('button');
   menuBtn.id = 'mobile-menu-btn';
   const sidebar = document.getElementById('sidebar');
@@ -396,6 +412,86 @@ function renderMobileBar() {
   bar.appendChild(menuBtn);
 }
 
+function renderFocus() {
+  const existing = document.getElementById('focus-overlay');
+  if (existing) existing.remove();
+
+  if (!state.focusMode) {
+    document.body.style.overflow = '';
+    return;
+  }
+
+  document.body.style.overflow = 'hidden';
+
+  const overlay = document.createElement('div');
+  overlay.id = 'focus-overlay';
+
+  if (state.focusBg) {
+    const seed = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+    const bgUrl = `https://source.unsplash.com/1920x1080/?landscape,nature&sig=${seed}`;
+    overlay.style.backgroundImage = `url(${bgUrl})`;
+  }
+
+  const card = document.createElement('div');
+  card.className = 'focus-card';
+
+  const title = document.createElement('div');
+  title.className = 'focus-title';
+  title.textContent = '// FOCUS';
+  card.appendChild(title);
+
+  const todayTodos = state.todos.filter((todo) => todo.todayDate);
+  const completedCount = todayTodos.filter((todo) => todo.completed).length;
+
+  const subtitle = document.createElement('div');
+  subtitle.className = 'focus-subtitle';
+  subtitle.textContent = `TODAY · ${completedCount}/${todayTodos.length} TASKS`;
+  card.appendChild(subtitle);
+
+  if (todayTodos.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'focus-empty';
+    empty.textContent = '// nothing planned for today';
+    card.appendChild(empty);
+  } else {
+    for (const todo of todayTodos) {
+      const item = document.createElement('div');
+      item.className = 'focus-todo-item' + (todo.completed ? ' completed' : '');
+
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.checked = todo.completed;
+      checkbox.addEventListener('change', () => { toggleTodo(todo.id); render(); });
+      item.appendChild(checkbox);
+
+      const text = document.createElement('span');
+      text.className = 'focus-todo-text';
+      text.textContent = todo.text;
+      item.appendChild(text);
+
+      card.appendChild(item);
+    }
+  }
+
+  overlay.appendChild(card);
+
+  const exitBtn = document.createElement('button');
+  exitBtn.className = 'focus-exit-btn';
+  exitBtn.innerHTML = '✕ <span class="focus-btn-text">ESC to exit</span>';
+  exitBtn.addEventListener('click', () => { exitFocus(); render(); });
+  overlay.appendChild(exitBtn);
+
+  const bgBtn = document.createElement('button');
+  bgBtn.className = 'focus-bg-btn';
+  bgBtn.innerHTML = state.focusBg
+    ? '🌄 <span class="focus-btn-text">Hide bg</span>'
+    : '🌄 <span class="focus-btn-text">Show bg</span>';
+  bgBtn.addEventListener('click', () => { toggleFocusBg(); render(); });
+  overlay.appendChild(bgBtn);
+
+  document.body.appendChild(overlay);
+}
+
 initState();
 reconcileToday();
 
@@ -405,5 +501,12 @@ if (!state.storageAvailable) {
 
 // Hook up state change listener
 state._onchange = render;
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && state.focusMode) {
+    exitFocus();
+    render();
+  }
+});
 
 render();

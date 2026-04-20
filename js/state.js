@@ -7,6 +7,8 @@ export const state = {
   activeCategory: 'All',
   activeFilter: 'all',
   storageAvailable: true,
+  focusMode: false,
+  focusBg: true,
 };
 
 export function initState() {
@@ -115,6 +117,21 @@ export function reconcileToday() {
     }
   }
   if (changed) persist();
+}
+
+export function enterFocus() {
+  state.focusMode = true;
+  persist();
+}
+
+export function exitFocus() {
+  state.focusMode = false;
+  persist();
+}
+
+export function toggleFocusBg() {
+  state.focusBg = !state.focusBg;
+  persist();
 }
 
 export function setActiveCategory(name) {
