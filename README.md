@@ -1,6 +1,6 @@
 # awesome-todo
 
-A personal, browser-based todo app with a cyberpunk purple aesthetic. No backend, no build step, no dependencies — just open `index.html` and start managing your tasks.
+A personal, browser-based todo app with a cyberpunk purple aesthetic. No backend, no build step, no dependencies — serve the folder locally and open it in any modern browser.
 
 ## Features
 
@@ -16,14 +16,21 @@ A personal, browser-based todo app with a cyberpunk purple aesthetic. No backend
 ## Usage
 
 1. Clone or download this repository.
-2. Open `index.html` in any modern browser — no server required.
+2. Serve it with a local HTTP server and open `http://localhost:8080` in your browser.
 
 ```sh
 git clone https://github.com/Dan1elFw/awesome-todo.git
 cd awesome-todo
-open index.html   # macOS
-# or just double-click index.html in your file manager
+
+# Python (built into macOS / Linux)
+python3 -m http.server 8080
+
+# Node.js
+npx serve .
 ```
+
+> **Why a local server?**
+> The app uses ES modules (`<script type="module">`) and `crypto.randomUUID()`, both of which require a [secure context](https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts). Chrome and Edge block these when a file is opened directly from disk (`file://` URL), so double-clicking `index.html` will produce a blank page in those browsers. A local `http://localhost` server satisfies the requirement. Firefox is more permissive and works without a server, but using one is recommended for consistency.
 
 ## How it works
 
