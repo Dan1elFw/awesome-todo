@@ -242,7 +242,11 @@ function renderMain() {
   }
 
   const dateInput = document.createElement('input');
-  dateInput.type = 'date';
+  dateInput.className = 'date-input';
+  dateInput.type = 'text';
+  dateInput.placeholder = 'Due date';
+  dateInput.addEventListener('focus', () => { dateInput.type = 'date'; });
+  dateInput.addEventListener('blur', () => { if (!dateInput.value) dateInput.type = 'text'; });
 
   const addBtn = document.createElement('button');
   addBtn.className = 'add-task-btn';

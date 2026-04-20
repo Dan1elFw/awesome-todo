@@ -179,7 +179,8 @@ body {
   box-shadow: 0 0 0 2px rgba(167, 139, 250, 0.2);
 }
 .add-bar input[type="text"] { flex: 1; }
-.add-bar input[type="date"] { width: 160px; color-scheme: dark; }
+.add-bar .date-input { width: 160px; flex: none; }
+.add-bar input[type="date"].date-input { color-scheme: dark; }
 
 .add-bar input[type="text"]::placeholder {
   color: var(--accent);
@@ -425,7 +426,7 @@ body {
     flex-wrap: wrap;
   }
 
-  .add-bar input[type="date"] {
+  .add-bar .date-input {
     width: 100%;
   }
 
