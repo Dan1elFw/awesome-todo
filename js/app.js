@@ -257,7 +257,9 @@ function renderMain() {
   if (visible.length === 0) {
     const empty = document.createElement('div');
     empty.className = 'empty-state';
-    empty.textContent = '// no tasks found';
+    empty.textContent = state.activeCategory === 'today'
+      ? '// nothing planned for today'
+      : '// no tasks found';
     list.appendChild(empty);
   }
 
