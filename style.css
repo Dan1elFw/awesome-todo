@@ -277,6 +277,7 @@ body {
 
 .todo-btn:hover { color: var(--accent); }
 .todo-btn.danger:hover { color: var(--danger); }
+.todo-btn.today-toggle.active { color: var(--accent); }
 
 .empty-state {
   color: var(--text-dim);

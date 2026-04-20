@@ -242,7 +242,9 @@ function renderMain() {
 
   // Filter todos
   let visible = state.todos;
-  if (state.activeCategory !== 'All') {
+  if (state.activeCategory === 'today') {
+    visible = visible.filter(t => t.todayDate);
+  } else if (state.activeCategory !== 'All') {
     visible = visible.filter(t => t.category === state.activeCategory);
   }
   if (state.activeFilter === 'active') visible = visible.filter(t => !t.completed);
@@ -295,6 +297,16 @@ function renderMain() {
     // Actions
     const actions = document.createElement('div');
     actions.className = 'todo-actions';
+
+    const todayBtn = document.createElement('button');
+    todayBtn.className = 'todo-btn today-toggle' + (todo.todayDate ? ' active' : '');
+    todayBtn.textContent = '☀';
+    todayBtn.title = todo.todayDate ? 'Remove from Today' : 'Add to Today';
+    todayBtn.addEventListener('click', () => {
+      if (todo.todayDate) removeFromToday(todo.id); else addToToday(todo.id);
+      render();
+    });
+    actions.appendChild(todayBtn);
 
     const editBtn = document.createElement('button');
     editBtn.className = 'todo-btn';
