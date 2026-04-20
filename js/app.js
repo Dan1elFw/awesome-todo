@@ -10,8 +10,21 @@ import {
 } from './state.js';
 
 let sidebarCollapsed = false;
+const FOCUS_BG_IMAGES = [
+  'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1920&q=80',
+  'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80',
+  'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1920&q=80',
+  'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80',
+  'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1920&q=80',
+];
 
 function isMobile() { return window.innerWidth <= 600; }
+
+function getFocusBackgroundUrl(date = new Date()) {
+  const seed = date.toISOString().slice(0, 10).replace(/-/g, '');
+  const index = Number(seed) % FOCUS_BG_IMAGES.length;
+  return FOCUS_BG_IMAGES[index];
+}
 
 function renderSidebar() {
   const sidebar = document.getElementById('sidebar');
@@ -427,9 +440,7 @@ function renderFocus() {
   overlay.id = 'focus-overlay';
 
   if (state.focusBg) {
-    const seed = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-    const bgUrl = `https://source.unsplash.com/1920x1080/?landscape,nature&sig=${seed}`;
-    overlay.style.backgroundImage = `url(${bgUrl})`;
+    overlay.style.backgroundImage = `url(${getFocusBackgroundUrl()})`;
   }
 
   const card = document.createElement('div');
