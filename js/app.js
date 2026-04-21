@@ -256,9 +256,18 @@ function renderMain() {
   const submitTask = () => {
     const text = textInput.value.trim();
     if (!text) return;
-    addTodo(text, catSelect.value, dateInput.value);
+    const category = catSelect.value;
+    addTodo(text, category, dateInput.value);
     textInput.value = '';
     dateInput.value = '';
+    // Ensure the new task is visible: switch out of 'today' view or a different category,
+    // and reset 'completed' filter since the new task is always active.
+    if (state.activeCategory !== 'All' && state.activeCategory !== category) {
+      state.activeCategory = category;
+    }
+    if (state.activeFilter === 'completed') {
+      state.activeFilter = 'all';
+    }
     render();
   };
 
