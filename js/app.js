@@ -11,6 +11,174 @@ import {
 
 let sidebarCollapsed = false;
 let focusClockInterval = null;
+
+// ── Custom select component ──────────────────────────────────────────────────
+function createCustomSelect(options, defaultValue) {
+  let selectedValue = (options.includes(defaultValue) ? defaultValue : null) || options[0] || '';
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'custom-select';
+
+  const trigger = document.createElement('button');
+  trigger.type = 'button';
+  trigger.className = 'custom-select-trigger';
+
+  const label = document.createElement('span');
+  label.textContent = selectedValue;
+  trigger.appendChild(label);
+
+  const arrow = document.createElement('span');
+  arrow.className = 'custom-select-trigger-arrow';
+  arrow.textContent = '▾';
+  trigger.appendChild(arrow);
+
+  const dropdown = document.createElement('div');
+  dropdown.className = 'custom-select-dropdown';
+  dropdown.style.display = 'none';
+
+  function renderOptions() {
+    dropdown.innerHTML = '';
+    for (const opt of options) {
+      const optEl = document.createElement('div');
+      optEl.className = 'custom-select-option' + (opt === selectedValue ? ' selected' : '');
+      optEl.textContent = opt;
+      optEl.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        selectedValue = opt;
+        label.textContent = opt;
+        closeDropdown();
+      });
+      dropdown.appendChild(optEl);
+    }
+  }
+
+  function openDropdown() {
+    renderOptions();
+    dropdown.style.display = 'block';
+    trigger.classList.add('open');
+    const handleOutside = (e) => {
+      if (!wrapper.contains(e.target)) {
+        closeDropdown();
+        document.removeEventListener('click', handleOutside);
+      }
+    };
+    setTimeout(() => document.addEventListener('click', handleOutside), 0);
+  }
+
+  function closeDropdown() {
+    dropdown.style.display = 'none';
+    trigger.classList.remove('open');
+  }
+
+  trigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    trigger.classList.contains('open') ? closeDropdown() : openDropdown();
+  });
+
+  wrapper.appendChild(trigger);
+  wrapper.appendChild(dropdown);
+  wrapper.getValue = () => selectedValue;
+  return wrapper;
+}
+
+// ── Custom modal dialogs ─────────────────────────────────────────────────────
+function showPrompt(title, placeholder = '') {
+  return new Promise((resolve) => {
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay';
+
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+
+    const titleEl = document.createElement('div');
+    titleEl.className = 'modal-title';
+    titleEl.textContent = title;
+    modal.appendChild(titleEl);
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'modal-input';
+    input.placeholder = placeholder;
+    modal.appendChild(input);
+
+    const actions = document.createElement('div');
+    actions.className = 'modal-actions';
+
+    const cancelBtn = document.createElement('button');
+    cancelBtn.className = 'modal-btn';
+    cancelBtn.textContent = 'Cancel';
+
+    const confirmBtn = document.createElement('button');
+    confirmBtn.className = 'modal-btn primary';
+    confirmBtn.textContent = 'Create';
+
+    const dismiss = (value) => { overlay.remove(); resolve(value); };
+
+    cancelBtn.addEventListener('click', () => dismiss(null));
+    confirmBtn.addEventListener('click', () => dismiss(input.value));
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') dismiss(input.value);
+      if (e.key === 'Escape') dismiss(null);
+    });
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) dismiss(null); });
+
+    actions.appendChild(cancelBtn);
+    actions.appendChild(confirmBtn);
+    modal.appendChild(actions);
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+    input.focus();
+  });
+}
+
+function showConfirm(title, message) {
+  return new Promise((resolve) => {
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay';
+
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+
+    const titleEl = document.createElement('div');
+    titleEl.className = 'modal-title';
+    titleEl.textContent = title;
+    modal.appendChild(titleEl);
+
+    const msgEl = document.createElement('div');
+    msgEl.className = 'modal-message';
+    msgEl.textContent = message;
+    modal.appendChild(msgEl);
+
+    const actions = document.createElement('div');
+    actions.className = 'modal-actions';
+
+    const cancelBtn = document.createElement('button');
+    cancelBtn.className = 'modal-btn';
+    cancelBtn.textContent = 'Cancel';
+
+    const confirmBtn = document.createElement('button');
+    confirmBtn.className = 'modal-btn danger';
+    confirmBtn.textContent = 'Delete';
+
+    const dismiss = (value) => { overlay.remove(); resolve(value); };
+
+    cancelBtn.addEventListener('click', () => dismiss(false));
+    confirmBtn.addEventListener('click', () => dismiss(true));
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) dismiss(false); });
+
+    const onKey = (e) => {
+      if (e.key === 'Escape') { dismiss(false); document.removeEventListener('keydown', onKey); }
+    };
+    document.addEventListener('keydown', onKey);
+
+    actions.appendChild(cancelBtn);
+    actions.appendChild(confirmBtn);
+    modal.appendChild(actions);
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+    confirmBtn.focus();
+  });
+}
 const FOCUS_BG_IMAGES = [
   'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1920&q=80',
   'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80',
@@ -107,12 +275,10 @@ function renderSidebar() {
     delBtn.className = 'del-cat';
     delBtn.textContent = '✕';
     delBtn.title = `Delete ${cat}`;
-    delBtn.addEventListener('click', (e) => {
+    delBtn.addEventListener('click', async (e) => {
       e.stopPropagation();
-      if (confirm(`Delete category "${cat}"? Its todos will move to Uncategorized.`)) {
-        deleteCategory(cat);
-        render();
-      }
+      const confirmed = await showConfirm('// DELETE LIST', `Delete "${cat}"? Its tasks will move to Uncategorized.`);
+      if (confirmed) { deleteCategory(cat); render(); }
     });
     item.appendChild(delBtn);
 
@@ -124,8 +290,8 @@ function renderSidebar() {
   const addCatBtn = document.createElement('button');
   addCatBtn.className = 'sidebar-action';
   addCatBtn.textContent = '+ New list';
-  addCatBtn.addEventListener('click', () => {
-    const name = prompt('List name:');
+  addCatBtn.addEventListener('click', async () => {
+    const name = await showPrompt('// NEW LIST', 'List name...');
     if (name && name.trim()) { addCategory(name.trim()); render(); }
   });
   sidebar.appendChild(addCatBtn);
@@ -233,14 +399,10 @@ function renderMain() {
   textInput.type = 'text';
   textInput.placeholder = '▶ New task...';
 
-  const catSelect = document.createElement('select');
-  for (const cat of state.categories) {
-    const opt = document.createElement('option');
-    opt.value = cat;
-    opt.textContent = cat;
-    if (state.activeCategory !== 'All' && cat === state.activeCategory) opt.selected = true;
-    catSelect.appendChild(opt);
-  }
+  const catSelect = createCustomSelect(
+    state.categories,
+    state.activeCategory !== 'All' && state.activeCategory !== 'today' ? state.activeCategory : undefined
+  );
 
   const dateInput = document.createElement('input');
   dateInput.className = 'date-input';
@@ -257,7 +419,7 @@ function renderMain() {
   const submitTask = () => {
     const text = textInput.value.trim();
     if (!text) return;
-    const category = catSelect.value;
+    const category = catSelect.getValue();
     addTodo(text, category, dateInput.value);
     textInput.value = '';
     dateInput.value = '';
