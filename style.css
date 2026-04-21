@@ -174,12 +174,16 @@ body {
   outline: none;
 }
 
+.add-bar select {
+  padding-right: 32px;
+}
+
 .add-bar input:focus, .add-bar select:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 2px rgba(167, 139, 250, 0.2);
 }
 .add-bar input[type="text"] { flex: 1; }
-.add-bar .date-input { width: 160px; flex: none; }
+.add-bar input.date-input { width: 160px; flex: none; }
 .add-bar input[type="date"].date-input { color-scheme: dark; }
 
 .add-bar input[type="text"]::placeholder {
