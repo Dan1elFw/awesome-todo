@@ -10,6 +10,7 @@ import {
 } from './state.js';
 
 let sidebarCollapsed = false;
+let addSectionCollapsed = false;
 let focusClockInterval = null;
 
 // ── Custom select component ──────────────────────────────────────────────────
@@ -387,13 +388,29 @@ function renderMain() {
   const addSection = document.createElement('div');
   addSection.className = 'add-section';
 
+  const addHeader = document.createElement('div');
+  addHeader.className = 'add-section-header';
+
   const addLabel = document.createElement('div');
   addLabel.className = 'add-label';
   addLabel.textContent = '// new task';
-  addSection.appendChild(addLabel);
+  addHeader.appendChild(addLabel);
+
+  const addToggleBtn = document.createElement('button');
+  addToggleBtn.className = 'add-section-toggle';
+  addToggleBtn.title = addSectionCollapsed ? 'Expand' : 'Collapse';
+  addToggleBtn.textContent = addSectionCollapsed ? '▾' : '▴';
+  addToggleBtn.addEventListener('click', () => {
+    addSectionCollapsed = !addSectionCollapsed;
+    render();
+  });
+  addHeader.appendChild(addToggleBtn);
+
+  addSection.appendChild(addHeader);
 
   const addBar = document.createElement('div');
   addBar.className = 'add-bar';
+  if (addSectionCollapsed) addBar.style.display = 'none';
 
   const textInput = document.createElement('input');
   textInput.type = 'text';
