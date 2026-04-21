@@ -594,6 +594,40 @@ body {
 
 .focus-bg-btn:hover { color: var(--accent); border-color: var(--accent-dim); }
 
+/* ── Focus Clock ── */
+.focus-clock {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  text-align: center;
+  font-family: 'ZCOOL QingKe HuangYou', 'Noto Serif SC', serif;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+}
+
+.focus-clock-time {
+  font-size: 88px;
+  font-weight: 400;
+  color: var(--text);
+  letter-spacing: 6px;
+  line-height: 1;
+  text-shadow:
+    0 0 30px rgba(167, 139, 250, 0.6),
+    0 0 80px rgba(167, 139, 250, 0.25);
+}
+
+.focus-clock-date {
+  font-size: 18px;
+  color: var(--accent);
+  letter-spacing: 3px;
+  margin-top: 10px;
+  opacity: 0.9;
+  text-shadow: 0 0 16px rgba(167, 139, 250, 0.4);
+}
+
 @media (max-width: 600px) {
   .focus-exit-btn .focus-btn-text,
   .focus-bg-btn .focus-btn-text { display: none; }
@@ -608,4 +642,8 @@ body {
     justify-content: center;
     font-size: 16px;
   }
+
+  .focus-clock { top: 60px; }
+  .focus-clock-time { font-size: 52px; letter-spacing: 3px; }
+  .focus-clock-date { font-size: 13px; letter-spacing: 1px; margin-top: 6px; }
 }

@@ -10,6 +10,7 @@ import {
 } from './state.js';
 
 let sidebarCollapsed = false;
+let focusClockInterval = null;
 const FOCUS_BG_IMAGES = [
   'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1920&q=80',
   'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80',
@@ -447,6 +448,7 @@ function renderFocus() {
 
   if (!state.focusMode) {
     document.body.style.overflow = '';
+    if (focusClockInterval) { clearInterval(focusClockInterval); focusClockInterval = null; }
     return;
   }
 
@@ -501,6 +503,29 @@ function renderFocus() {
   }
 
   overlay.appendChild(card);
+
+  // Digital clock
+  const clock = document.createElement('div');
+  clock.className = 'focus-clock';
+
+  const timeEl = document.createElement('div');
+  timeEl.className = 'focus-clock-time';
+  clock.appendChild(timeEl);
+
+  const dateEl = document.createElement('div');
+  dateEl.className = 'focus-clock-date';
+  clock.appendChild(dateEl);
+
+  function updateClock() {
+    const now = new Date();
+    timeEl.textContent = now.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+    dateEl.textContent = now.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+  }
+  updateClock();
+  if (focusClockInterval) clearInterval(focusClockInterval);
+  focusClockInterval = setInterval(updateClock, 1000);
+
+  overlay.appendChild(clock);
 
   const exitBtn = document.createElement('button');
   exitBtn.className = 'focus-exit-btn';
