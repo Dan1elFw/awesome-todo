@@ -14,7 +14,7 @@ let focusClockInterval = null;
 
 // ── Custom select component ──────────────────────────────────────────────────
 function createCustomSelect(options, defaultValue) {
-  let selectedValue = (options.includes(defaultValue) ? defaultValue : null) || options[0] || '';
+  let selectedValue = options.includes(defaultValue) ? defaultValue : (options[0] || '');
 
   const wrapper = document.createElement('div');
   wrapper.className = 'custom-select';

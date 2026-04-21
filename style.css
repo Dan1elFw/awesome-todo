@@ -810,9 +810,7 @@ body {
   .custom-select-trigger { min-width: unset; width: 100%; }
   .custom-select { width: 100%; }
   .custom-select-dropdown { right: 0; left: 0; }
-}
 
-@media (max-width: 600px) {
   .focus-exit-btn .focus-btn-text,
   .focus-bg-btn .focus-btn-text { display: none; }
 
