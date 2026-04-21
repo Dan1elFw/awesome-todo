@@ -706,9 +706,8 @@ function renderFocus() {
 
   const bgBtn = document.createElement('button');
   bgBtn.className = 'focus-bg-btn';
-  bgBtn.innerHTML = state.focusBg
-    ? '🌄 <span class="focus-btn-text">Hide bg</span>'
-    : '🌄 <span class="focus-btn-text">Show bg</span>';
+  bgBtn.title = state.focusBg ? 'Hide background' : 'Show background';
+  bgBtn.textContent = '◑';
   bgBtn.addEventListener('click', () => { toggleFocusBg(); render(); });
   overlay.appendChild(bgBtn);
 

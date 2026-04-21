@@ -577,22 +577,22 @@ body {
 
 .focus-bg-btn {
   position: fixed;
-  top: 24px;
-  left: 24px;
+  top: 20px;
+  left: 20px;
   z-index: 1001;
-  background: rgba(18, 18, 42, 0.75);
-  border: 1px solid var(--border);
+  background: none;
+  border: none;
   color: var(--text-dim);
-  font-family: inherit;
-  font-size: 12px;
-  padding: 8px 14px;
+  font-size: 16px;
+  padding: 4px;
   border-radius: 4px;
   cursor: pointer;
-  backdrop-filter: blur(8px);
-  letter-spacing: 1px;
+  opacity: 0.35;
+  transition: opacity 0.2s;
+  line-height: 1;
 }
 
-.focus-bg-btn:hover { color: var(--accent); border-color: var(--accent-dim); }
+.focus-bg-btn:hover { opacity: 0.85; color: var(--accent); }
 
 /* ── Focus Clock ── */
 .focus-clock {
@@ -811,11 +811,9 @@ body {
   .custom-select { width: 100%; }
   .custom-select-dropdown { right: 0; left: 0; }
 
-  .focus-exit-btn .focus-btn-text,
-  .focus-bg-btn .focus-btn-text { display: none; }
+  .focus-exit-btn .focus-btn-text { display: none; }
 
-  .focus-exit-btn,
-  .focus-bg-btn {
+  .focus-exit-btn {
     width: 44px;
     height: 44px;
     padding: 0;
