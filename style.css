@@ -153,8 +153,35 @@ body {
   margin-bottom: 8px;
 }
 
+.add-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.add-section-header .add-label {
+  margin-bottom: 0;
+}
+
+.add-section-toggle {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+  opacity: 0.7;
+}
+
+.add-section-toggle:hover {
+  opacity: 1;
+}
+
 .add-bar {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   padding: 16px;
   background: var(--bg);
@@ -422,10 +449,6 @@ body {
   }
 
   /* Stack add-bar inputs vertically */
-  .add-bar {
-    flex-wrap: wrap;
-  }
-
   .add-bar .date-input {
     width: 100%;
   }
