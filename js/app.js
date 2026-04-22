@@ -399,7 +399,7 @@ function renderMain() {
   const addToggleBtn = document.createElement('button');
   addToggleBtn.className = 'add-section-toggle';
   addToggleBtn.title = addSectionCollapsed ? 'Expand' : 'Collapse';
-  addToggleBtn.textContent = addSectionCollapsed ? '▾' : '▴';
+  addToggleBtn.textContent = addSectionCollapsed ? '+' : '×';
   addToggleBtn.addEventListener('click', () => {
     addSectionCollapsed = !addSectionCollapsed;
     render();
@@ -584,12 +584,12 @@ function renderMobileBar() {
   let bar = document.getElementById('mobile-bar');
 
   if (!isMobile()) {
-    // Desktop: hide mobile bar
     if (bar) bar.style.display = 'none';
+    const existingMask = document.getElementById('sidebar-mask');
+    if (existingMask) existingMask.remove();
     return;
   }
 
-  // Mobile: show mobile bar
   if (!bar) {
     bar = document.createElement('div');
     bar.id = 'mobile-bar';
@@ -597,6 +597,24 @@ function renderMobileBar() {
   }
   bar.style.display = 'flex';
   bar.innerHTML = '';
+
+  const sidebar = document.getElementById('sidebar');
+  const isOpen = sidebar.classList.contains('open');
+
+  // Tap-outside mask
+  let mask = document.getElementById('sidebar-mask');
+  if (!mask) {
+    mask = document.createElement('div');
+    mask.id = 'sidebar-mask';
+    document.body.appendChild(mask);
+  }
+  if (isOpen) {
+    mask.classList.add('visible');
+    mask.onclick = () => { sidebar.classList.remove('open'); render(); };
+  } else {
+    mask.classList.remove('visible');
+    mask.onclick = null;
+  }
 
   const title = document.createElement('span');
   title.className = 'app-title';
@@ -619,14 +637,9 @@ function renderMobileBar() {
 
   const menuBtn = document.createElement('button');
   menuBtn.id = 'mobile-menu-btn';
-  const sidebar = document.getElementById('sidebar');
-  const isOpen = sidebar.classList.contains('open');
   menuBtn.textContent = isOpen ? '✕ close' : '☰ menu';
   if (isOpen) menuBtn.classList.add('active');
-  menuBtn.addEventListener('click', () => {
-    sidebar.classList.toggle('open');
-    render();
-  });
+  menuBtn.addEventListener('click', () => { sidebar.classList.toggle('open'); render(); });
   bar.appendChild(menuBtn);
 }
 
@@ -706,8 +719,8 @@ function renderFocus() {
 
   function updateClock() {
     const now = new Date();
-    timeEl.textContent = now.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
-    dateEl.textContent = now.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+    timeEl.textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+    dateEl.textContent = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
   }
   updateClock();
   if (focusClockInterval) clearInterval(focusClockInterval);
