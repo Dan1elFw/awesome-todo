@@ -186,14 +186,47 @@ const FOCUS_BG_IMAGES = [
   'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1920&q=80',
   'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80',
   'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1920&q=80',
+  'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1920&q=80',
+  'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1920&q=80',
+  'https://images.unsplash.com/photo-1541963463532-d68292c34b19?auto=format&fit=crop&w=1920&q=80',
+  'https://images.unsplash.com/photo-1475924156734-496f6cac6ec1?auto=format&fit=crop&w=1920&q=80',
+  'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?auto=format&fit=crop&w=1920&q=80',
+  'https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?auto=format&fit=crop&w=1920&q=80',
+  'https://images.unsplash.com/photo-1510784722466-f2aa240c730f?auto=format&fit=crop&w=1920&q=80',
+  'https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5?auto=format&fit=crop&w=1920&q=80',
+  'https://images.unsplash.com/photo-1518623489648-a173ef7824f3?auto=format&fit=crop&w=1920&q=80',
+  'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1920&q=80',
+  'https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?auto=format&fit=crop&w=1920&q=80',
+  'https://images.unsplash.com/photo-1426604966848-d7adac402bff?auto=format&fit=crop&w=1920&q=80',
+  'https://images.unsplash.com/photo-1431794062232-2a99a5431c6c?auto=format&fit=crop&w=1920&q=80',
+  'https://images.unsplash.com/photo-1504198266287-1659872e6590?auto=format&fit=crop&w=1920&q=80',
+  'https://images.unsplash.com/photo-1455156218388-5e61b526818b?auto=format&fit=crop&w=1920&q=80',
+  'https://images.unsplash.com/photo-1444464666168-49d633b86797?auto=format&fit=crop&w=1920&q=80',
+  'https://images.unsplash.com/photo-1443916568596-df5a58c445e9?auto=format&fit=crop&w=1920&q=80',
+  'https://images.unsplash.com/photo-1442458017215-285b83f65851?auto=format&fit=crop&w=1920&q=80',
+  'https://images.unsplash.com/photo-1418065460487-3e41a6c84dc5?auto=format&fit=crop&w=1920&q=80',
+  'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?auto=format&fit=crop&w=1920&q=80',
 ];
 
 function isMobile() { return window.innerWidth <= 600; }
 
-function getFocusBackgroundUrl(date = new Date()) {
-  const seed = date.toISOString().slice(0, 10).replace(/-/g, '');
-  const index = Number(seed) % FOCUS_BG_IMAGES.length;
-  return FOCUS_BG_IMAGES[index];
+function loadFocusBackground(overlay) {
+  const seed = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  const startIndex = Number(seed) % FOCUS_BG_IMAGES.length;
+  const total = FOCUS_BG_IMAGES.length;
+  let attempts = 0;
+
+  function tryLoad(index) {
+    if (attempts >= total) return;
+    attempts++;
+    const url = FOCUS_BG_IMAGES[index % total];
+    const img = new Image();
+    img.onload = () => { overlay.style.backgroundImage = `url(${url})`; };
+    img.onerror = () => { tryLoad(index + 1); };
+    img.src = url;
+  }
+
+  tryLoad(startIndex);
 }
 
 function renderSidebar() {
@@ -659,7 +692,7 @@ function renderFocus() {
   overlay.id = 'focus-overlay';
 
   if (state.focusBg) {
-    overlay.style.backgroundImage = `url(${getFocusBackgroundUrl()})`;
+    loadFocusBackground(overlay);
   }
 
   const card = document.createElement('div');
@@ -740,6 +773,19 @@ function renderFocus() {
   bgBtn.textContent = '◑';
   bgBtn.addEventListener('click', () => { toggleFocusBg(); render(); });
   overlay.appendChild(bgBtn);
+
+  const fsBtn = document.createElement('button');
+  fsBtn.className = 'focus-fullscreen-btn';
+  fsBtn.title = document.fullscreenElement ? 'Exit full screen' : 'Enter full screen';
+  fsBtn.textContent = '⛶';
+  fsBtn.addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    } else {
+      document.exitFullscreen().catch(() => {});
+    }
+  });
+  overlay.appendChild(fsBtn);
 
   document.body.appendChild(overlay);
 }
