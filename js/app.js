@@ -255,7 +255,7 @@ function renderSidebar() {
   sidebar.appendChild(title);
 
   // Today entry
-  const todayCount = state.todos.filter(t => t.todayDate).length;
+  const todayCount = state.todos.filter(t => t.todayDate && !t.completed).length;
   const todayItem = document.createElement('div');
   todayItem.className = 'category-item today-item' + (state.activeCategory === 'today' ? ' active' : '');
 
@@ -654,7 +654,7 @@ function renderMobileBar() {
   title.textContent = '// AWESOME-TODO';
   bar.appendChild(title);
 
-  const todayCount = state.todos.filter(t => t.todayDate).length;
+  const todayCount = state.todos.filter(t => t.todayDate && !t.completed).length;
   const todayMobileBtn = document.createElement('button');
   todayMobileBtn.className = 'mobile-today-btn' + (state.activeCategory === 'today' ? ' active' : '');
   todayMobileBtn.textContent = todayCount > 0 ? `☀ ${todayCount}` : '☀';
@@ -703,23 +703,24 @@ function renderFocus() {
   title.textContent = '// FOCUS';
   card.appendChild(title);
 
-  const todayTodos = state.todos.filter((todo) => todo.todayDate);
-  const completedCount = todayTodos.filter((todo) => todo.completed).length;
+  const allTodayTodos = state.todos.filter((todo) => todo.todayDate);
+  const completedCount = allTodayTodos.filter((todo) => todo.completed).length;
+  const todayTodos = allTodayTodos.filter((todo) => !todo.completed);
 
   const subtitle = document.createElement('div');
   subtitle.className = 'focus-subtitle';
-  subtitle.textContent = `TODAY · ${completedCount}/${todayTodos.length} TASKS`;
+  subtitle.textContent = `TODAY · ${completedCount}/${allTodayTodos.length} TASKS`;
   card.appendChild(subtitle);
 
   if (todayTodos.length === 0) {
     const empty = document.createElement('div');
     empty.className = 'focus-empty';
-    empty.textContent = '// nothing planned for today';
+    empty.textContent = allTodayTodos.length === 0 ? '// nothing planned for today' : '// all tasks completed';
     card.appendChild(empty);
   } else {
     for (const todo of todayTodos) {
       const item = document.createElement('div');
-      item.className = 'focus-todo-item' + (todo.completed ? ' completed' : '');
+      item.className = 'focus-todo-item';
 
       const checkbox = document.createElement('input');
       checkbox.type = 'checkbox';
