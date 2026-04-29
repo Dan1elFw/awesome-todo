@@ -774,6 +774,19 @@ function renderFocus() {
   bgBtn.addEventListener('click', () => { toggleFocusBg(); render(); });
   overlay.appendChild(bgBtn);
 
+  const fsBtn = document.createElement('button');
+  fsBtn.className = 'focus-fullscreen-btn';
+  fsBtn.title = document.fullscreenElement ? 'Exit full screen' : 'Enter full screen';
+  fsBtn.textContent = '⛶';
+  fsBtn.addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    } else {
+      document.exitFullscreen().catch(() => {});
+    }
+  });
+  overlay.appendChild(fsBtn);
+
   document.body.appendChild(overlay);
 }
 
