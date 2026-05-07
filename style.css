@@ -288,7 +288,7 @@ body {
   font-weight: bold;
 }
 
-.todo-text { flex: 1; font-size: 14px; word-break: break-word; font-family: 'Noto Serif SC', 'Songti SC', serif; }
+.todo-text { flex: 1; font-size: 14px; word-break: break-word; font-family: inherit; }
 
 .todo-edit-input {
   flex: 1;
@@ -590,7 +590,7 @@ body {
   font-size: 14px;
   color: var(--text);
   flex: 1;
-  font-family: 'Noto Serif SC', 'Songti SC', serif;
+  font-family: inherit;
 }
 
 .focus-empty {
