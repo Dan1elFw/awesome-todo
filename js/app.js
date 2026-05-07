@@ -525,7 +525,7 @@ function renderMain() {
 
   for (const todo of visible) {
     const item = document.createElement('div');
-    item.className = 'todo-item' + (todo.completed ? ' completed' : '');
+    item.className = 'todo-item' + (todo.completed ? ' completed' : '') + (todo.todayDate ? ' today' : '');
 
     // Checkbox
     const checkbox = document.createElement('input');
