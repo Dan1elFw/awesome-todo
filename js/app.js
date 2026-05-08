@@ -509,13 +509,12 @@ function renderMain() {
   }
   if (state.activeFilter === 'active') visible = visible.filter(t => !t.completed);
   if (state.activeFilter === 'completed') visible = visible.filter(t => t.completed);
-  const orderedVisible = [...visible].reverse();
 
   // Todo list
   const list = document.createElement('div');
   list.className = 'todo-list';
 
-  if (orderedVisible.length === 0) {
+  if (visible.length === 0) {
     const empty = document.createElement('div');
     empty.className = 'empty-state';
     empty.textContent = state.activeCategory === 'today'
@@ -526,7 +525,7 @@ function renderMain() {
 
   const today = new Date().toISOString().slice(0, 10);
 
-  for (const todo of orderedVisible) {
+  for (const todo of visible) {
     const item = document.createElement('div');
     item.className = 'todo-item' + (todo.completed ? ' completed' : '') + (todo.todayDate ? ' today' : '');
 
@@ -768,7 +767,7 @@ function renderFocus() {
     empty.textContent = allTodayTodos.length === 0 ? '// nothing planned for today' : '// all tasks completed';
     card.appendChild(empty);
   } else {
-    for (const todo of [...todayTodos].reverse()) {
+    for (const todo of todayTodos) {
       const item = document.createElement('div');
       item.className = 'focus-todo-item';
 
