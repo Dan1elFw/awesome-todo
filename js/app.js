@@ -12,6 +12,7 @@ import {
 let sidebarCollapsed = false;
 let addSectionCollapsed = false;
 let focusClockInterval = null;
+let focusClockResizeHandler = null;
 
 // ── Custom select component ──────────────────────────────────────────────────
 function createCustomSelect(options, defaultValue) {
@@ -679,6 +680,10 @@ function renderMobileBar() {
 function renderFocus() {
   const existing = document.getElementById('focus-overlay');
   if (existing) existing.remove();
+  if (focusClockResizeHandler) {
+    window.removeEventListener('resize', focusClockResizeHandler);
+    focusClockResizeHandler = null;
+  }
 
   if (!state.focusMode) {
     document.body.style.overflow = '';
@@ -732,7 +737,14 @@ function renderFocus() {
   if (focusClockInterval) clearInterval(focusClockInterval);
   focusClockInterval = setInterval(updateClock, 1000);
 
-  card.appendChild(clock);
+  function positionClock() {
+    const cardRect = card.getBoundingClientRect();
+    const clockRect = clock.getBoundingClientRect();
+    const midpointTop = cardRect.top / 2;
+    const maxTopAboveCard = cardRect.top - clockRect.height - 12;
+    const top = Math.max(8, Math.min(midpointTop, maxTopAboveCard));
+    clock.style.top = `${top}px`;
+  }
 
   if (todayTodos.length === 0) {
     const empty = document.createElement('div');
@@ -759,6 +771,7 @@ function renderFocus() {
     }
   }
 
+  overlay.appendChild(clock);
   overlay.appendChild(card);
 
   const exitBtn = document.createElement('button');
@@ -788,6 +801,9 @@ function renderFocus() {
   overlay.appendChild(fsBtn);
 
   document.body.appendChild(overlay);
+  positionClock();
+  focusClockResizeHandler = () => positionClock();
+  window.addEventListener('resize', focusClockResizeHandler);
 }
 
 initState();

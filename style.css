@@ -662,11 +662,15 @@ body {
 
 /* ── Focus Clock ── */
 .focus-clock {
-  margin: 0 0 24px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  margin: 0;
+  width: max-content;
   text-align: center;
   font-family: 'Doto', ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace;
-  padding-bottom: 20px;
-  border-bottom: 1px solid var(--border);
+  pointer-events: none;
 }
 
 .focus-clock-time {
