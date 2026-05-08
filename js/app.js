@@ -743,9 +743,9 @@ function renderFocus() {
     const MIN_CLOCK_TOP_PADDING = 8;
     const cardRect = card.getBoundingClientRect();
     const clockRect = clock.getBoundingClientRect();
-    const halfwayToCardTop = cardRect.top / 2;
-    const maxTopAboveCard = cardRect.top - clockRect.height - CLOCK_CARD_SPACING;
-    const top = Math.max(MIN_CLOCK_TOP_PADDING, Math.min(halfwayToCardTop, maxTopAboveCard));
+    const midpointFromViewportToCard = cardRect.top / 2;
+    const maxClockTop = cardRect.top - clockRect.height - CLOCK_CARD_SPACING;
+    const top = Math.max(MIN_CLOCK_TOP_PADDING, Math.min(midpointFromViewportToCard, maxClockTop));
     clock.style.top = `${top}px`;
   }
 
@@ -804,8 +804,8 @@ function renderFocus() {
   overlay.appendChild(fsBtn);
 
   document.body.appendChild(overlay);
-  positionClock();
-  focusClockResizeHandler = () => positionClock();
+  requestAnimationFrame(positionClock);
+  focusClockResizeHandler = () => requestAnimationFrame(positionClock);
   window.addEventListener('resize', focusClockResizeHandler);
 }
 
