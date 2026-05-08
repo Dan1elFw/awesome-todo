@@ -256,6 +256,7 @@ body {
 
 .todo-item.completed { opacity: 0.45; }
 .todo-item.completed .todo-text { text-decoration: line-through; }
+.todo-item.today { border-left: 3px solid var(--accent); background: rgba(167, 139, 250, 0.07); }
 
 .todo-item input[type="checkbox"] {
   appearance: none;
