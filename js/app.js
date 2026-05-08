@@ -712,6 +712,28 @@ function renderFocus() {
   subtitle.textContent = `TODAY · ${completedCount}/${allTodayTodos.length} TASKS`;
   card.appendChild(subtitle);
 
+  const clock = document.createElement('div');
+  clock.className = 'focus-clock';
+
+  const timeEl = document.createElement('div');
+  timeEl.className = 'focus-clock-time';
+  clock.appendChild(timeEl);
+
+  const dateEl = document.createElement('div');
+  dateEl.className = 'focus-clock-date';
+  clock.appendChild(dateEl);
+
+  function updateClock() {
+    const now = new Date();
+    timeEl.textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+    dateEl.textContent = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+  }
+  updateClock();
+  if (focusClockInterval) clearInterval(focusClockInterval);
+  focusClockInterval = setInterval(updateClock, 1000);
+
+  card.appendChild(clock);
+
   if (todayTodos.length === 0) {
     const empty = document.createElement('div');
     empty.className = 'focus-empty';
@@ -738,29 +760,6 @@ function renderFocus() {
   }
 
   overlay.appendChild(card);
-
-  // Digital clock
-  const clock = document.createElement('div');
-  clock.className = 'focus-clock';
-
-  const timeEl = document.createElement('div');
-  timeEl.className = 'focus-clock-time';
-  clock.appendChild(timeEl);
-
-  const dateEl = document.createElement('div');
-  dateEl.className = 'focus-clock-date';
-  clock.appendChild(dateEl);
-
-  function updateClock() {
-    const now = new Date();
-    timeEl.textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
-    dateEl.textContent = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
-  }
-  updateClock();
-  if (focusClockInterval) clearInterval(focusClockInterval);
-  focusClockInterval = setInterval(updateClock, 1000);
-
-  overlay.appendChild(clock);
 
   const exitBtn = document.createElement('button');
   exitBtn.className = 'focus-exit-btn';
