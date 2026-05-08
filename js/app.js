@@ -508,12 +508,13 @@ function renderMain() {
   }
   if (state.activeFilter === 'active') visible = visible.filter(t => !t.completed);
   if (state.activeFilter === 'completed') visible = visible.filter(t => t.completed);
+  const orderedVisible = [...visible].reverse();
 
   // Todo list
   const list = document.createElement('div');
   list.className = 'todo-list';
 
-  if (visible.length === 0) {
+  if (orderedVisible.length === 0) {
     const empty = document.createElement('div');
     empty.className = 'empty-state';
     empty.textContent = state.activeCategory === 'today'
@@ -524,7 +525,7 @@ function renderMain() {
 
   const today = new Date().toISOString().slice(0, 10);
 
-  for (const todo of visible) {
+  for (const todo of orderedVisible) {
     const item = document.createElement('div');
     item.className = 'todo-item' + (todo.completed ? ' completed' : '') + (todo.todayDate ? ' today' : '');
 
@@ -738,11 +739,13 @@ function renderFocus() {
   focusClockInterval = setInterval(updateClock, 1000);
 
   function positionClock() {
+    const CLOCK_CARD_SPACING = 12;
+    const MIN_CLOCK_TOP_PADDING = 8;
     const cardRect = card.getBoundingClientRect();
     const clockRect = clock.getBoundingClientRect();
     const midpointTop = cardRect.top / 2;
-    const maxTopAboveCard = cardRect.top - clockRect.height - 12;
-    const top = Math.max(8, Math.min(midpointTop, maxTopAboveCard));
+    const maxTopAboveCard = cardRect.top - clockRect.height - CLOCK_CARD_SPACING;
+    const top = Math.max(MIN_CLOCK_TOP_PADDING, Math.min(midpointTop, maxTopAboveCard));
     clock.style.top = `${top}px`;
   }
 
@@ -752,7 +755,7 @@ function renderFocus() {
     empty.textContent = allTodayTodos.length === 0 ? '// nothing planned for today' : '// all tasks completed';
     card.appendChild(empty);
   } else {
-    for (const todo of todayTodos) {
+    for (const todo of [...todayTodos].reverse()) {
       const item = document.createElement('div');
       item.className = 'focus-todo-item';
 
