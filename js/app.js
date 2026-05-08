@@ -13,6 +13,7 @@ let sidebarCollapsed = false;
 let addSectionCollapsed = false;
 let focusClockInterval = null;
 let focusClockResizeHandler = null;
+let focusClockPositionRaf = null;
 
 // ── Custom select component ──────────────────────────────────────────────────
 function createCustomSelect(options, defaultValue) {
@@ -685,6 +686,10 @@ function renderFocus() {
     window.removeEventListener('resize', focusClockResizeHandler);
     focusClockResizeHandler = null;
   }
+  if (focusClockPositionRaf !== null) {
+    cancelAnimationFrame(focusClockPositionRaf);
+    focusClockPositionRaf = null;
+  }
 
   if (!state.focusMode) {
     document.body.style.overflow = '';
@@ -749,6 +754,14 @@ function renderFocus() {
     clock.style.top = `${top}px`;
   }
 
+  function scheduleClockPosition() {
+    if (focusClockPositionRaf !== null) return;
+    focusClockPositionRaf = requestAnimationFrame(() => {
+      focusClockPositionRaf = null;
+      positionClock();
+    });
+  }
+
   if (todayTodos.length === 0) {
     const empty = document.createElement('div');
     empty.className = 'focus-empty';
@@ -804,8 +817,8 @@ function renderFocus() {
   overlay.appendChild(fsBtn);
 
   document.body.appendChild(overlay);
-  requestAnimationFrame(positionClock);
-  focusClockResizeHandler = () => requestAnimationFrame(positionClock);
+  scheduleClockPosition();
+  focusClockResizeHandler = () => scheduleClockPosition();
   window.addEventListener('resize', focusClockResizeHandler);
 }
 
