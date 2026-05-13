@@ -663,22 +663,21 @@ body {
 /* ── Focus Clock ── */
 .focus-clock {
   position: absolute;
-  top: 80px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1;
+  margin: 0;
+  width: max-content;
   text-align: center;
   font-family: 'Doto', ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace;
-  white-space: nowrap;
   pointer-events: none;
-  user-select: none;
 }
 
 .focus-clock-time {
-  font-size: 88px;
+  font-size: 72px;
   font-weight: 400;
   color: var(--text);
-  letter-spacing: 6px;
+  letter-spacing: 4px;
   line-height: 1;
   text-shadow:
     0 0 30px rgba(167, 139, 250, 0.6),
@@ -891,7 +890,7 @@ body {
     font-size: 16px;
   }
 
-  .focus-clock { top: 60px; }
+  .focus-clock { margin-bottom: 20px; padding-bottom: 16px; }
   .focus-clock-time { font-size: 52px; letter-spacing: 3px; }
   .focus-clock-date { font-size: 13px; letter-spacing: 1px; margin-top: 6px; }
 }

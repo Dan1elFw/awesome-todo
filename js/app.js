@@ -12,6 +12,8 @@ import {
 let sidebarCollapsed = false;
 let addSectionCollapsed = false;
 let focusClockInterval = null;
+let focusClockResizeHandler = null;
+let focusClockPositionRaf = null;
 
 // ── Custom select component ──────────────────────────────────────────────────
 function createCustomSelect(options, defaultValue) {
@@ -679,6 +681,14 @@ function renderMobileBar() {
 function renderFocus() {
   const existing = document.getElementById('focus-overlay');
   if (existing) existing.remove();
+  if (focusClockResizeHandler) {
+    window.removeEventListener('resize', focusClockResizeHandler);
+    focusClockResizeHandler = null;
+  }
+  if (focusClockPositionRaf !== null) {
+    cancelAnimationFrame(focusClockPositionRaf);
+    focusClockPositionRaf = null;
+  }
 
   if (!state.focusMode) {
     document.body.style.overflow = '';
@@ -712,6 +722,45 @@ function renderFocus() {
   subtitle.textContent = `TODAY · ${completedCount}/${allTodayTodos.length} TASKS`;
   card.appendChild(subtitle);
 
+  const clock = document.createElement('div');
+  clock.className = 'focus-clock';
+
+  const timeEl = document.createElement('div');
+  timeEl.className = 'focus-clock-time';
+  clock.appendChild(timeEl);
+
+  const dateEl = document.createElement('div');
+  dateEl.className = 'focus-clock-date';
+  clock.appendChild(dateEl);
+
+  function updateClock() {
+    const now = new Date();
+    timeEl.textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+    dateEl.textContent = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+  }
+  updateClock();
+  if (focusClockInterval) clearInterval(focusClockInterval);
+  focusClockInterval = setInterval(updateClock, 1000);
+
+  function positionClock() {
+    const CLOCK_CARD_SPACING = 12;
+    const MIN_CLOCK_TOP_PADDING = 8;
+    const cardRect = card.getBoundingClientRect();
+    const clockRect = clock.getBoundingClientRect();
+    const midpointFromViewportToCard = cardRect.top / 2;
+    const maxClockTop = cardRect.top - clockRect.height - CLOCK_CARD_SPACING;
+    const top = Math.max(MIN_CLOCK_TOP_PADDING, Math.min(midpointFromViewportToCard, maxClockTop));
+    clock.style.top = `${top}px`;
+  }
+
+  function scheduleClockPosition() {
+    if (focusClockPositionRaf !== null) return;
+    focusClockPositionRaf = requestAnimationFrame(() => {
+      focusClockPositionRaf = null;
+      positionClock();
+    });
+  }
+
   if (todayTodos.length === 0) {
     const empty = document.createElement('div');
     empty.className = 'focus-empty';
@@ -737,30 +786,8 @@ function renderFocus() {
     }
   }
 
-  overlay.appendChild(card);
-
-  // Digital clock
-  const clock = document.createElement('div');
-  clock.className = 'focus-clock';
-
-  const timeEl = document.createElement('div');
-  timeEl.className = 'focus-clock-time';
-  clock.appendChild(timeEl);
-
-  const dateEl = document.createElement('div');
-  dateEl.className = 'focus-clock-date';
-  clock.appendChild(dateEl);
-
-  function updateClock() {
-    const now = new Date();
-    timeEl.textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
-    dateEl.textContent = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
-  }
-  updateClock();
-  if (focusClockInterval) clearInterval(focusClockInterval);
-  focusClockInterval = setInterval(updateClock, 1000);
-
   overlay.appendChild(clock);
+  overlay.appendChild(card);
 
   const exitBtn = document.createElement('button');
   exitBtn.className = 'focus-exit-btn';
@@ -789,6 +816,9 @@ function renderFocus() {
   overlay.appendChild(fsBtn);
 
   document.body.appendChild(overlay);
+  scheduleClockPosition();
+  focusClockResizeHandler = () => scheduleClockPosition();
+  window.addEventListener('resize', focusClockResizeHandler);
 }
 
 initState();
